@@ -24,10 +24,12 @@ class NFAConstructor:
         stack = []
 
         for char in postfix:
-            if char.isalnum() or char in {'+', '-', '/', '[', ']', '{', '}'}:
+            if char.isalnum():
                 stack.append(self._basic_nfa(nfa, char))
             elif char == '*':
                 stack.append(self._star_nfa(nfa, stack.pop()))
+            elif char == '+':
+                stack.append(self._plus_nfa(nfa, stack.pop()))
             elif char == '.':
                 nfa2 = stack.pop()
                 nfa1 = stack.pop()
@@ -47,7 +49,9 @@ class NFAConstructor:
 
         return nfa
 
+
     def _basic_nfa(self, nfa: Automaton, symbol: str) -> tuple:
+        # Create basic NFA for a single symbol.
         start = self.new_state()
         end = self.new_state()
         nfa.add_state(start)
@@ -55,7 +59,9 @@ class NFAConstructor:
         nfa.add_transition(start, end, symbol)
         return (start, end)
 
+
     def _concat_nfa(self, nfa: Automaton, nfa1: tuple, nfa2: tuple) -> tuple:
+        # Create concatenation NFA.
         nfa.add_transition(nfa1[1], nfa2[0], 'ε')
         return (nfa1[0], nfa2[1])
 
@@ -79,4 +85,14 @@ class NFAConstructor:
         nfa.add_transition(nfa1[1], end, 'ε')
         nfa.add_transition(start, end, 'ε')
         nfa.add_transition(nfa1[1], nfa1[0], 'ε')
+        return (start, end)
+
+    def _plus_nfa(self, nfa: Automaton, nfa1: tuple) -> tuple:
+        start = self.new_state()
+        end = self.new_state()
+        nfa.add_state(start)
+        nfa.add_state(end)
+        nfa.add_transition(start, nfa1[0], 'ε')  # Must go through at least one 'a'
+        nfa.add_transition(nfa1[1], end, 'ε')  # Then can repeat via *
+        nfa.add_transition(nfa1[1], nfa1[0], 'ε')  # Loop back for more 'a's
         return (start, end)

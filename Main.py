@@ -7,7 +7,7 @@ class Main:
     @staticmethod
     def run():
         print("=== Regular Expression to DFA and Turing Machine Converter ===")
-        print("Operators: . (concat), | (union), * (Kleene star) ")
+        print("Operators: . (concat), | (union), * (Kleene star), + (Kleene plus), ")
 
         while True:
             regex = input("Enter regular expression: ").strip()
@@ -32,8 +32,6 @@ class Main:
                 # Display TM information
                 Main._display_tm(tm_transitions)
 
-                Main._test_tm(tm_transitions)
-
             except Exception as e:
                 print(f"Error processing regular expression: {e}\n")
 
@@ -56,7 +54,6 @@ class Main:
     def _display_tm(transitions):
         print("\n=== Turing Machine Transitions ===")
 
-        # Group transitions by current state for better readability
         transitions_by_state = {}
         for t in transitions:
             if t['current_state'] not in transitions_by_state:
@@ -69,28 +66,6 @@ class Main:
                 print(f"  ({t['current_state']}, {t['read_symbol']}) → "
                       f"({t['next_state']}, {t['write_symbol']}, {t['move']})")
 
-
-    @staticmethod
-    def _test_tm(tm_transitions):
-        print("\n=== Turing Machine Testing ===")
-        while True:
-            test_input = input("\nEnter input string to test (or 'back' to return): ").strip()
-
-            if test_input.lower() == 'back':
-                break
-
-            if not test_input:
-                print("Error: Empty input. Please try again.")
-                continue
-
-            result = TMGenerator.simulate_tm(tm_transitions, test_input)
-
-            print("\nSimulation Result:")
-            print(f"Input: {test_input}")
-            print(f"Result: {'ACCEPTED' if result['result'] == 'accept' else 'REJECTED'}")
-            print(f"Final Tape: {result['tape']}")
-            if 'reason' in result:
-                print(f"Reason: {result['reason']}")
 
 
 if __name__ == "__main__":
