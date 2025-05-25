@@ -21,15 +21,12 @@ class Main:
                 continue
 
             try:
-                # Build and convert automata
                 nfa = NFAConstructor().build_nfa(regex)
                 dfa = DFAConverter.nfa_to_dfa(nfa)
                 tm_transitions = TMGenerator.generate_transitions(dfa)
 
-                # Display DFA information
                 Main._display_dfa(dfa)
 
-                # Display TM information
                 Main._display_tm(tm_transitions)
 
             except Exception as e:

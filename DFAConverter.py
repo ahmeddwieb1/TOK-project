@@ -10,7 +10,6 @@ class DFAConverter:
 
         while queue:
             state = queue.popleft()
-            #  Check if state exists
             if state in nfa.states:
                 for next_state in nfa.states[state].transitions.get('ε', set()):
                     if next_state not in closure:
@@ -34,7 +33,6 @@ class DFAConverter:
 
         while state_queue:
             nfa_states, dfa_state = state_queue.popleft()
-            # Check if this is a final state
             if any(state in nfa.final_states for state in nfa_states):
                 dfa.final_states.add(dfa_state)
                 dfa.states[dfa_state].is_final = True
@@ -43,7 +41,6 @@ class DFAConverter:
                 next_states = set()
                 for state in nfa_states:
                     next_states.update(nfa.states[state].transitions.get(symbol, set()))
-                # No transition for this symbol
                 if not next_states:
                     dfa.add_transition(dfa_state, dead_state, symbol)
                     continue

@@ -3,7 +3,7 @@ from State import State
 
 class Automaton:
     def __init__(self):
-        self.states = {}  # name -> State object
+        self.states = {}
         self.start_state = None
         self.final_states = set()
         self.alphabet = set()
